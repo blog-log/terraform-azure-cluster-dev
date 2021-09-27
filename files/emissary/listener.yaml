@@ -1,0 +1,25 @@
+apiVersion: x.getambassador.io/v3alpha1
+kind: AmbassadorListener
+metadata:
+  name: http-listener
+  namespace: emissary
+spec:
+  port: 8080
+  protocol: HTTP
+  securityModel: XFP
+  hostBinding:
+    namespace:
+      from: ALL # See below
+---
+apiVersion: x.getambassador.io/v3alpha1
+kind: AmbassadorListener
+metadata:
+  name: https-listener
+  namespace: emissary
+spec:
+  port: 8443
+  protocol: HTTPS
+  securityModel: XFP
+  hostBinding:
+    namespace:
+      from: ALL # See below

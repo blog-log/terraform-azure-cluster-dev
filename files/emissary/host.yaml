@@ -1,0 +1,13 @@
+apiVersion: x.getambassador.io/v3alpha1
+kind: AmbassadorHost
+metadata:
+  name: wildcard-host
+spec:
+  hostname: "*"
+  acmeProvider:
+    authority: none
+  tlsSecret:
+    name: ambassador-certs
+  selector:
+    matchLabels:
+      hostname: wildcard-host

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: services-config
+data:
+  FRONTEND_URL: https://development.bloglog.io
+  DATASTORE_URL: https://development.bloglog.io/api/v1/datastore
+  EXTRACTOR_URL: https://development.bloglog.io/api/v1/extractor
+  PROCESSOR_URL: https://development.bloglog.io/api/v1/processor
+  SEARCHER_URL: https://development.bloglog.io/api/v1/searcher
+  WEBHOOK_URL: https://development.bloglog.io/api/v1/webhook
