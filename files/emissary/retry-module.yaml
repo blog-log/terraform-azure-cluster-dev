@@ -1,0 +1,11 @@
+# ideally should not use global retry config and should be per service, but this is easier
+apiVersion: getambassador.io/v2
+kind:  Module
+metadata:
+  name:  ambassador
+spec:
+  config:
+    retry_policy:
+      retry_on: "gateway-error"
+      num_retries: 3
+      per_try_timeout: 1s

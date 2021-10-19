@@ -1,0 +1,89 @@
+apiVersion: ceph.rook.io/v1
+kind: CephCluster
+metadata:
+  name: rook-ceph
+  namespace: rook-ceph
+spec:
+  cephVersion:
+    # see the "Cluster Settings" section below for more details on which image of ceph to run
+    image: quay.io/ceph/ceph:v16.2.6
+    allowUnsupported: false
+  skipUpgradeChecks: false
+  dataDirHostPath: /var/lib/rook
+  continueUpgradeAfterChecksEvenIfNotHealthy: false
+  mon:
+    count: 3
+    allowMultiplePerNode: false
+    volumeClaimTemplate:
+      spec:
+        storageClassName: default
+        resources:
+          requests:
+            storage: 10Gi
+  mgr:
+    count: 1
+    modules:
+      - name: pg_autoscaler
+        enabled: true
+  dashboard:
+    enabled: true
+    ssl: true
+  network:
+    hostNetwork: true
+  monitoring:
+    enabled: false
+    rulesNamespace: rook-ceph
+  rbdMirroring:
+    workers: 0
+  crashCollector:
+    disable: false
+  cleanupPolicy:
+    deleteDataDirOnHosts: ""
+  removeOSDsIfOutAndSafeToRemove: false
+  placement:
+    all:
+      tolerations:
+        - key: "kubernetes.azure.com/scalesetpriority"
+          operator: "Equal"
+          value: "spot"
+          effect: "NoSchedule"
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchExpressions:
+              - key: app
+                operator: In
+                values:
+                  - storage
+  storage:
+    storageClassDeviceSets:
+      - name: set1
+        count: 3
+        portable: true
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "4Gi"
+          requests:
+            cpu: "300m"
+            memory: "2Gi"
+        volumeClaimTemplates:
+          - metadata:
+              name: data
+            spec:
+              resources:
+                requests:
+                  storage: 100Gi
+              # IMPORTANT: Change the storage class depending on your environment (e.g. local-storage, gp2)
+              storageClassName: default
+              volumeMode: Block
+              accessModes:
+                - ReadWriteOnce
+    onlyApplyOSDPlacement: false
+  disruptionManagement:
+    managePodBudgets: false
+    osdMaintenanceTimeout: 30
+    manageMachineDisruptionBudgets: false
+    machineDisruptionBudgetNamespace: openshift-machine-api
