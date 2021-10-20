@@ -13,3 +13,4 @@ spec:
     kind: ClusterIssuer
   dnsNames:
     - development.bloglog.io
+    - storage.development.bloglog.io

@@ -1,0 +1,13 @@
+apiVersion: x.getambassador.io/v3alpha1
+kind: AmbassadorMapping
+metadata:
+  name: rook-ceph-mgr-dashboard
+spec:
+  hostname: "storage.development.bloglog.io"
+  prefix: / # root
+  timeout_ms: 5000
+  service: rook-ceph-mgr-dashboard:7000
+  retry_policy:
+    retry_on: "gateway-error"
+    num_retries: 3
+    per_try_timeout: 1s
